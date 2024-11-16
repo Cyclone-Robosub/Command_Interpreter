@@ -76,17 +76,13 @@ void Thruster_Commander::print_info()
 
 void pwm_array::simple_vertical(float force){
 	int resultingPWMfromForce[4];
-	for(auto f: resultingPWMfromForce)
-	{
-		
-	}
-	// The force is going to tell us how much the PWM is going to be for each pin. The pins are stored in pwmsignals Array. 
-	//Fet Force -> deduce PWM from force for each pin -> tell each pin by iterating over the array what th
+	int i, j;
 	for(int i = 0; i < pwm_array.length(); ++i)
 	{
-		pwm_array[i]= resultingPWMfromForce[i];
+		resultPWMfromForce[i] = force / 4; 
 	}
-	
+	// The force is going to tell us how much the PWM is going to be for each pin. The pins are stored in pwmsignals Array. 
+	//Fet Force -> deduce PWM from force for each pin -> tell each pin by iterating over the array what the	
 }
 void pwm_array::simple_forward(float force){
 	
