@@ -92,11 +92,11 @@ int get_pwm(int thruster_num, float force){
         int mid = low + (high - low) / 2;
 
         // Check if x is present at mid
-        if (arr[mid] == x)
+        if (arr[mid] == force)
             return mid;
 
         // If x greater, ignore left half
-        if (arr[mid] < x)
+        if (arr[mid] < force)
             low = mid + 1;
 
         // If x is smaller, ignore right half
