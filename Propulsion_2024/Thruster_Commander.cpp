@@ -76,7 +76,7 @@ void Thruster_Commander::print_info()
 
 void pwm_array::simple_vertical(float force){
 	int resultingPWMfromForce[4];
-	int i, j;
+	int i;
 	for(int i = 0; i < pwm_array.length(); ++i)
 	{
 		resultPWMfromForce[i] = force / 4; 
@@ -85,10 +85,20 @@ void pwm_array::simple_vertical(float force){
 	//Fet Force -> deduce PWM from force for each pin -> tell each pin by iterating over the array what the	
 }
 void pwm_array::simple_forward(float force){
-	
+	int resultingPWMfromForce[4];
+	int i;
+	for(int i = 0; i < pwm_array.length(); ++i)
+	{
+		resultPWMfromForce[i] = force / 4; 
+	}
 }
 void pwm_array::simple_sideways(float force){
-	
+	int resultingPWMfromForce[4];
+	int i;
+	for(int i = 0; i < pwm_array.length(); ++i)
+	{
+		resultPWMfromForce[i] = force / 4; 
+	}
 }
 void pwm_array::simple_horizontal(float x_force, float y_force)
 {
