@@ -367,3 +367,8 @@ FodyWeavers.xsd
 /cmake-build-debug/
 /build/
 CMakeSettings.json
+.vscode
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
+unnamed.patch

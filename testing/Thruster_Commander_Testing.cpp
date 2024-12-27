@@ -224,3 +224,10 @@ TEST(ThrusterCommanderTest, Thrust_Compute_fz) {
 
     std::string output = testing::internal::GetCapturedStdout(); // TODO: check that output matches expected output
 }
+TEST(ThrusterCommanderTest, CompareConstructors) {
+    Thruster_Commander commander = Thruster_Commander();
+    Thruster_Commander commander2 = Thruster_Commander("/data/config1.yaml");
+  //  std::cout << "HELLO!";
+    commander.print_info();
+    commander2.print_info();
+    }

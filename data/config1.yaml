@@ -2,3 +2,82 @@ rock:
   mass: 10.5 # in kilograms
   volume: 0.004 # in cubic meters
   weight: 102.9 # in newtons
+rhowater: 1025
+num_thrusters: 8
+mass_center_inches:
+  - first: 0.466
+  - second: 0
+  - third: 1.561
+thruster_positions:
+  - row0:
+      - 0.2535
+      - -0.2035
+      - 0.042
+    row1:
+      - 0.2535
+      - 0.2035
+      - -0.042
+    row2:
+      - -0.2545
+      - -0.2035
+      - 0.042
+    row3:
+      - -0.2545
+      - 0.2035
+      - 0.042
+    row4:
+      - 0.167
+      - -0.1375
+      - -0.049
+    row5:
+      - 0.167
+      - 0.1375
+      - -0.049
+    row6:
+      - -0.1975
+      - -0.1165
+      - -0.049
+    row7:
+      - -0.1975
+      - 0.1165
+      - -0.049
+thruster_directions:
+  - row0:
+      - 0
+      - 0
+      - 1
+    row1:
+      - 0
+      - 0
+      - 1
+    row2:
+      - 0
+      - 0
+      - 1
+    row3:
+      - 0
+      - 0
+      - 1
+    row4:
+      - "-sin45"
+      - "-sin45"
+      - 0
+    row5:
+      - "-sin45"
+      - sin45
+      - 0
+    row6:
+      - "-sin45"
+      - "-sin45"
+      - 0
+    row7:
+      - "-sin45"
+      - sin45
+      - 0
+volume_inches: 449.157
+mass: 5.51
+gravity: -9.81
+rho_water: 1025
+max_thruster_force = 4.5
+min_thruster_force = -3.5
+c_inf: [0.041, 0.05, 0.125, 0.005, 0.005,0.005]
