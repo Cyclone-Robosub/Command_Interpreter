@@ -7,8 +7,8 @@
 #include "Thruster_Commander.h"
 #include "eigen-3.4.0/Eigen/Dense"
 #include <fstream>
-#include <sstream>
 #include <yaml-cpp/yaml.h>
+#include <sstream>
 #include <filesystem>
 
 Thruster_Commander::Thruster_Commander()

@@ -52,6 +52,7 @@ gtest_discover_tests(run_tests)
 #Gtest end
 
 #YAML start
+find_package(yaml-cpp REQUIRED)
 FetchContent_Declare(
         yaml-cpp
         GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
@@ -59,7 +60,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(yaml-cpp)
 
-target_link_libraries(Propulsion_2024 PUBLIC yaml-cpp::yaml-cpp) # The library or executable that require yaml-cpp library
+target_link_libraries(Propulsion_2024 PUBLIC yaml-cpp::yaml-cpp)
+ # The library or executable that require yaml-cpp library
 #YAML end
 
 configure_file(${PROJECT_SOURCE_DIR}/data/14V_Correlation.csv ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
