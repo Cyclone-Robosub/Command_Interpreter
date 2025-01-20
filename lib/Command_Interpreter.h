@@ -102,6 +102,11 @@ public:
     /// @param command a command struct with a C-style array of pwm frequency integers and a duration float
     void execute(const Command& command);
 
+    /// @brief Executes a command without self-correction. Sets pwm values for the duration specified. Does not stop
+    /// thrusters after execution.
+    /// @param command a command struct with three sub-components: the acceleration, steady-state, and deceleration.
+    void blind_execute(const Command& command);
+
     std::vector<int> readPins();
 
     ~Command_Interpreter_RPi5(); //TODO this also deletes all its pins. Not sure if this is desirable or not?

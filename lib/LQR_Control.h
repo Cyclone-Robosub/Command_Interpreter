@@ -10,9 +10,6 @@
 #include <vector>
 #include <numeric>
 
-
-
-
 namespace LQR_Control
 {
     double tolerance = 0.00001;
@@ -22,11 +19,11 @@ namespace LQR_Control
     int dim_u = 1;
 }
 
-void solveRiccati(Eigen::MatrixXd& A, Eigen::MatrixXd& B,
-    Eigen::MatrixXd& Q, Eigen::MatrixXd& R,
-    Eigen::MatrixXd& P, Eigen::MatrixXd& K)
+void solveRiccati(Eigen::MatrixXd &A, Eigen::MatrixXd &B,
+                  Eigen::MatrixXd &Q, Eigen::MatrixXd &R,
+                  Eigen::MatrixXd &P, Eigen::MatrixXd &K)
 {
-	using namespace LQR_Control;
+    using namespace LQR_Control;
     P = Q;
 
     Eigen::MatrixXd P_next;
@@ -46,14 +43,12 @@ void solveRiccati(Eigen::MatrixXd& A, Eigen::MatrixXd& B,
     K = R.inverse() * B.transpose() * P;
 }
 
-
 //------------------------------------------------------------------------------------
 
-
 std::tuple<std::vector<float>, std::vector<float>, std::vector<float>, std::vector<float>, std::vector<float>> LQR(
-    Eigen::MatrixXd& A, Eigen::MatrixXd& B,
-    Eigen::MatrixXd& Q, Eigen::MatrixXd& R,
-    Eigen::MatrixXd& P, Eigen::MatrixXd& K)
+    Eigen::MatrixXd &A, Eigen::MatrixXd &B,
+    Eigen::MatrixXd &Q, Eigen::MatrixXd &R,
+    Eigen::MatrixXd &P, Eigen::MatrixXd &K)
 {
     using namespace LQR_Control;
 
@@ -84,5 +79,4 @@ std::tuple<std::vector<float>, std::vector<float>, std::vector<float>, std::vect
     }
 
     return std::make_tuple(time, xk0, xk1, xk2, xk3);
-}
 }

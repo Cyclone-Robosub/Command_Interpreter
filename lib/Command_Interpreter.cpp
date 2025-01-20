@@ -191,7 +191,29 @@ std::vector<int> Command_Interpreter_RPi5::readPins() {
 }
 
 Command_Interpreter_RPi5::~Command_Interpreter_RPi5() {
-    for (auto pin : allPins()) {
+    for (auto pin: allPins()) {
         delete pin;
     }
 }
+
+//move_forwards(float distance, std::ofstream logfile) {
+//    command = calculate_stuff(distance, current_robot_data);
+//    blind_execute(command.accel_command, logfile); //accel
+//    blind_execute(command.ss_command, logfile); //stead-state
+//    blind_execute(command.dec_command, logfile); //decel
+//    // At this point, a new thread/command sends new commands. This can be stop, or it can be a new direction, etc.
+//}
+//
+//void blind_execute(command_component command, std::ofstream logfile) {
+//    execute(command);
+//    while (!(time_is_up() || interrupt())) {
+//    }
+//}
+//
+//void corrective_execute(command_component command, std::ofstream logfile) {
+//    adjusted_command = copy(command)
+//    while (!time_is_up()) {
+//        adjusted_command = correct_command();
+//        execute(command);
+//    }
+//}
