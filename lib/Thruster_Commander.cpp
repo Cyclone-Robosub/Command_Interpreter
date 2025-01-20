@@ -11,6 +11,8 @@
 #include <sstream>
 #include <filesystem>
 
+
+
 Thruster_Commander::Thruster_Commander()
 {
 	// TODO: Move all the hardcoded values in this constructor to a config file
@@ -96,14 +98,14 @@ Thruster_Commander::Thruster_Commander()
 	// std::string thruster_files = {}
 	// Eigen::Matrix<float, 2, 6> min_max_voltages = {}
 }
-Thruster_Commander::Thruster_Commander(std::string filename)
+Thruster_Commander::Thruster_Commander(std::string filePath)
 {
 	namespace fs = std::filesystem;
 	fs::path currentPath = fs::current_path();
 	fs::path parentPath = currentPath.parent_path();
-	std::string filePath = std::string(parentPath) + filename;
-
-	YAML::Node config = YAML::LoadFile(filePath);
+	std::string filePaths = std::string(parentPath) + filePath;
+try{
+	YAML::Node config = YAML::LoadFile(filePaths);
 	num_thrusters = config["num_thrusters"].as<int>();
 	 three_axis mass_center_inches = {config["mass_center_inches"]["first"].as<float>(), 0, 1.561};
 	// mass_center = mass_center_inches * 0.0254;
@@ -160,13 +162,17 @@ Thruster_Commander::Thruster_Commander(std::string filename)
 	position = six_axis::Zero();
 	velocity = six_axis::Zero();
 	acceleration = six_axis::Zero();
-	
+}
+catch (std::exception& e)
+{
+	std::cerr << "Error: " << e.what();
+}
 }
 Thruster_Commander::~Thruster_Commander() {}
 
 void Thruster_Commander::print_info()
 {
-
+	std:: cout <<"NUM THRUSTERS: " << num_thrusters << std::endl;
 	std::cout << "Mass Center: \n"
 			  << mass_center << std::endl;
 	std::cout << "Volume Center: \n"

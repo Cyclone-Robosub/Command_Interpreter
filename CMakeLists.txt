@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.28)
 project(Propulsion_2024)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options("-DMOCK_RPI")
 
 include_directories(.
@@ -47,11 +48,12 @@ target_link_libraries(
         GTest::gtest_main
 )
 
+add_subdirectory(yaml-cpp)
+target_link_libraries(Propulsion_2024 yaml-cpp)
+target_link_libraries(run_tests yaml-cpp)
 include(GoogleTest)
 gtest_discover_tests(run_tests)
 #Gtest end
 
-add_subdirectory(yaml-cpp)
-target_link_libraries(Propulsion_2024 yaml-cpp)
 
 configure_file(${PROJECT_SOURCE_DIR}/data/14V_Correlation.csv ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

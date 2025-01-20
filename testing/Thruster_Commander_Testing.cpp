@@ -1,6 +1,6 @@
 #include "Thruster_Commander.h"
 #include <gtest/gtest.h>
-
+#include <iostream>
 
 TEST(ThrusterCommanderTest, Accel_Time_x) {
 	auto control = new Thruster_Commander();
@@ -229,5 +229,6 @@ TEST(ThrusterCommanderTest, CompareConstructors) {
     Thruster_Commander commander2 = Thruster_Commander("/data/config1.yaml");
   //  std::cout << "HELLO!";
     commander.print_info();
+    std::cout << "HERE HERE HERE" << std::endl;
     commander2.print_info();
     }
