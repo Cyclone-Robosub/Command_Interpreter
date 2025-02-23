@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <chrono>
 
 // A command is a simple instruction to the vehicle
 // Commands will be combined in sequencing to create more complex instructions
@@ -12,10 +13,18 @@ struct force_array{
 struct pwm_array {
     int pwm_signals[8];
 };
-struct Command {
+
+struct CommandComponent {
     pwm_array thruster_pwms; // PWM values for each thruster
-    float duration;       // Duration of the command in seconds
+    std::chrono::milliseconds duration; // Duration of the command in milliseconds
 };
+
+struct Command {
+    CommandComponent acceleration;
+    CommandComponent steadyState;
+    CommandComponent deceleration;
+};
+
 struct Sequence {
 	std::vector<Command> commands;
 };

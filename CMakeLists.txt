@@ -15,6 +15,10 @@ add_executable(Propulsion_2024
         lib/Main.cpp
         lib/Thruster_Commander.cpp
         lib/Thruster_Commander.h
+        lib/Mock_GPIO.cpp
+        lib/Mock_GPIO.h
+        lib/Wiring.cpp
+        lib/Wiring.h
         lib/LQR_Control.h
         lib/Physics.h "lib/Physics.cpp")
   #"lib/LQR_Control.h" "lib/Physics.h" "testing/Physics_Testing.cpp")
@@ -41,7 +45,11 @@ add_executable(
         lib/Command_Interpreter.cpp
         lib/Command_Interpreter.h
         lib/Thruster_Commander.cpp
-        lib/Thruster_Commander.h "lib/Physics.cpp")
+        lib/Thruster_Commander.h
+        lib/Mock_GPIO.cpp
+        lib/Mock_GPIO.h
+        lib/Wiring.cpp
+        lib/Wiring.h "lib/Physics.cpp")
   #"lib/LQR_Control.h" "lib/Physics.h" "testing/Physics_Testing.cpp")
 target_link_libraries(
         run_tests

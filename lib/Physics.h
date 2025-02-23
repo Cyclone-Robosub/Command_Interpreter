@@ -4,6 +4,6 @@
 #include <iostream>
 
 namespace physics {
-	float accel_time(float vi, float vt, float cd, float m, float f);
-	float accel_dist(float vi, float vt, float cd, float m, float f, float t);
+	double accel_time(double vi, double vt, double cd, double m, double f);
+	double accel_dist(double vi, double vt, double cd, double m, double f, double t);
 }

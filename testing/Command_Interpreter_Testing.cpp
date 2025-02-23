@@ -4,14 +4,14 @@
 TEST(CommandInterpreterTest, CreateCommandInterpreter) {
     testing::internal::CaptureStdout();
 
-    auto pin1 = new PwmPin(0);
-    auto pin2 = new PwmPin(1);
-    auto pin3 = new PwmPin(2);
-    auto pin4 = new PwmPin(3);
-    auto pin5 = new PwmPin(4);
-    auto pin6 = new PwmPin(5);
-    auto pin7 = new PwmPin(6);
-    auto pin8 = new PwmPin(7);
+    auto pin1 = new HardwarePwmPin(0);
+    auto pin2 = new HardwarePwmPin(1);
+    auto pin3 = new HardwarePwmPin(2);
+    auto pin4 = new HardwarePwmPin(3);
+    auto pin5 = new HardwarePwmPin(4);
+    auto pin6 = new HardwarePwmPin(5);
+    auto pin7 = new HardwarePwmPin(6);
+    auto pin8 = new HardwarePwmPin(7);
     auto pins = std::vector<PwmPin *>{pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8};
 
 
@@ -29,14 +29,14 @@ TEST(CommandInterpreterTest, CreateCommandInterpreter) {
 TEST(CommandInterpreterTest, CreateCommandInterpreterWithDigitalPins) {
     testing::internal::CaptureStdout();
 
-    auto pin1 = new PwmPin(0);
-    auto pin2 = new PwmPin(1);
-    auto pin3 = new PwmPin(2);
-    auto pin4 = new PwmPin(3);
-    auto pin5 = new PwmPin(4);
-    auto pin6 = new PwmPin(5);
-    auto pin7 = new PwmPin(6);
-    auto pin8 = new PwmPin(7);
+    auto pin1 = new HardwarePwmPin(0);
+    auto pin2 = new HardwarePwmPin(1);
+    auto pin3 = new HardwarePwmPin(2);
+    auto pin4 = new HardwarePwmPin(3);
+    auto pin5 = new HardwarePwmPin(4);
+    auto pin6 = new HardwarePwmPin(5);
+    auto pin7 = new HardwarePwmPin(6);
+    auto pin8 = new HardwarePwmPin(7);
     auto pwmPins = std::vector<PwmPin *>{pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8};
 
     auto digital1 = new DigitalPin(8, ActiveLow);
@@ -54,30 +54,72 @@ TEST(CommandInterpreterTest, CreateCommandInterpreterWithDigitalPins) {
     ASSERT_EQ(pinStatus, (std::vector<int>{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 }
 
-TEST(CommandInterpreterTest, ExecuteCommand) {
+TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
     testing::internal::CaptureStdout();
 
-    struct Command command = {1500, 1900, 1100,
-            1250, 1300, 1464, 1535,
-            1536, 2};
-    auto pin1 = new PwmPin(0);
-    auto pin2 = new PwmPin(1);
-    auto pin3 = new PwmPin(2);
-    auto pin4 = new PwmPin(3);
-    auto pin5 = new PwmPin(4);
-    auto pin6 = new PwmPin(5);
-    auto pin7 = new PwmPin(6);
-    auto pin8 = new PwmPin(7);
-    auto pins = std::vector<PwmPin *>{pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8};
+    const CommandComponent acceleration = {1500, 1900, 1100,
+                                     1250, 1300, 1464, 1535,
+                                     1536, std::chrono::milliseconds(2000)};
 
-    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{});
+    auto pin1 = new HardwarePwmPin(0);
+    auto pin2 = new HardwarePwmPin(1);
+    auto pin3 = new HardwarePwmPin(2);
+    auto pin4 = new HardwarePwmPin(3);
+    auto pin5 = new HardwarePwmPin(4);
+    auto pin6 = new HardwarePwmPin(5);
+    auto pin7 = new HardwarePwmPin(6);
+    auto pin8 = new HardwarePwmPin(7);
+    auto pins = std::vector<PwmPin*>{pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8};
+
+    std::ofstream logFile = std::ofstream("/dev/null");
+
+    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin*>{});
     interpreter->initializePins();
-    interpreter->execute(command);
+    auto startTime = std::chrono::system_clock::now();
+    interpreter->blind_execute(acceleration, logFile);
+    auto endTime = std::chrono::system_clock::now();
     std::string output = testing::internal::GetCapturedStdout();
     auto pinStatus = interpreter->readPins();
 
+    delete interpreter;
+
+    ASSERT_NEAR((endTime - startTime) / std::chrono::milliseconds(1), std::chrono::milliseconds(2000) /
+        std::chrono::milliseconds(1), std::chrono::milliseconds(10) / std::chrono::milliseconds(1));
+    ASSERT_EQ(pinStatus, (std::vector<int>{0, 1023, 1023, 603, 463, 3, 0, 2}));
+}
+
+TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
+    testing::internal::CaptureStdout();
+
+    const CommandComponent acceleration = {1500, 1900, 1100,
+                                           1250, 1300, 1464, 1535,
+                                           1536, std::chrono::milliseconds(2000)};
+
+    auto pin1 = new SoftwarePwmPin(0);
+    auto pin2 = new SoftwarePwmPin(1);
+    auto pin3 = new SoftwarePwmPin(2);
+    auto pin4 = new SoftwarePwmPin(3);
+    auto pin5 = new SoftwarePwmPin(4);
+    auto pin6 = new SoftwarePwmPin(5);
+    auto pin7 = new SoftwarePwmPin(6);
+    auto pin8 = new SoftwarePwmPin(7);
+    auto pins = std::vector<PwmPin*>{pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8};
+
+    std::ofstream logFile = std::ofstream("/dev/null");
+
+    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin*>{});
+    interpreter->initializePins();
+    auto startTime = std::chrono::system_clock::now();
+    interpreter->blind_execute(acceleration, logFile);
+    auto endTime = std::chrono::system_clock::now();
+    std::string output = testing::internal::GetCapturedStdout();
+    auto pinStatus = interpreter->readPins();
 
     delete interpreter;
 
-    ASSERT_EQ(pinStatus, (std::vector<int>{0, 1023, 1023, 603, 463, 3, 0, 2}));
+    ASSERT_NEAR((endTime - startTime) / std::chrono::milliseconds(1), std::chrono::milliseconds(2000) /
+        std::chrono::milliseconds(1), std::chrono::milliseconds(10) / std::chrono::milliseconds(1));
+
+    ASSERT_EQ(pinStatus, (std::vector<int>{0, 100, 100, 59, 46, 1, 0, 0}));
 }
+
