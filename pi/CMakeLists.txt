@@ -14,14 +14,14 @@ add_executable(Propulsion_2024
         ../lib/Command_Interpreter.cpp
         ../lib/Command_Interpreter.h
         ../lib/Main.cpp
-        ../lib/Thruster_Commander.cpp
-        ../lib/Thruster_Commander.h
+        ../old-lib/Thruster_Commander.cpp
+        ../old-lib/Thruster_Commander.h
 		../lib/Mock_GPIO.cpp
 		../lib/Mock_GPIO.h
 		../lib/Wiring.cpp
 		../lib/Wiring.h
-        ../lib/LQR_Control.h
-        ../lib/Physics.h "../lib/Physics.cpp")
+		../old-lib/LQR_Control.h
+        ../old-lib/Physics.h "../old-lib/Physics.cpp")
   #"lib/LQR_Control.h" "lib/Physics.h" "testing/Physics_Testing.cpp")
 
 # GTest start
@@ -42,15 +42,15 @@ add_executable(
         ../testing/Thruster_Commander_Testing.cpp
         ../testing/Physics_Testing.cpp
         ../lib/Command.h
-        ../lib/Physics.h
+        ../old-lib/Physics.h
         ../lib/Command_Interpreter.cpp
         ../lib/Command_Interpreter.h
-        ../lib/Thruster_Commander.cpp
-        ../lib/Thruster_Commander.h 
+        ../old-lib/Thruster_Commander.cpp
+        ../old-lib/Thruster_Commander.h
 		../lib/Mock_GPIO.cpp
 		../lib/Mock_GPIO.h
 		../lib/Wiring.cpp
-		../lib/Wiring.h "../lib/Physics.cpp")
+		../lib/Wiring.h "../old-lib/Physics.cpp")
   #"lib/LQR_Control.h" "lib/Physics.h" "testing/Physics_Testing.cpp")
 target_link_libraries(
         run_tests

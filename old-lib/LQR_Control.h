@@ -5,7 +5,7 @@
 // https://ctms.engin.umich.edu/CTMS/index.php?example=InvertedPendulum&section=ControlStateSpace
 
 #pragma once
-#include "eigen-3.4.0/Eigen/Dense"
+#include "../eigen-3.4.0/Eigen/Dense"
 #include <iostream>
 #include <vector>
 #include <numeric>
