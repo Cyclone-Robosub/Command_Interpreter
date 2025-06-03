@@ -23,7 +23,7 @@ void WiringControl::printToSerial(const std::string& message) {
 #include "Serial.hpp"
 
 bool WiringControl::initializeSerial() {
-    if ((serial = serialOpen("/dev/serial/by-id/usb-MicroPython_Board_in_FS_mode_e6614864d3798738-if00", 115200)) < 0) {
+    if ((serial = serialOpen("/dev/serial/by-id/usb-MicroPython_Board_in_FS_mode_e6605838836bb12f-if00", 115200)) < 0) {
         return false;
     }
     return true;
