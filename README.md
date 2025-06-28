@@ -62,7 +62,7 @@ Installation for these prerequisites varies from system to system. You can check
 - Code that we write lives in `src/`.
 - Code that we write for unit testing (to make sure our code is correct) lives in `testing/`.
 - Other libraries that we use have their own directories as well, named correspondingly.
-- You'll make your own `build/` folder (see **"Using Cmake to Build Code"**)
+- You'll make your own `build/` folder (see **"Using CMake to Build Code"**)
 - `CMakeLists.txt` and `README.md` (this file!) live on the same level as the directories listed above.
 
 ### Basic Terminal Commands
