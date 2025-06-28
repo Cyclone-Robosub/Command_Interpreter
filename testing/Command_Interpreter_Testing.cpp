@@ -309,3 +309,106 @@ TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
     }
 }
 
+TEST(CommandInterpreterTest, LimitTooLow) {
+    std::ofstream outLog("/dev/null");
+
+    auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
+    ASSERT_EXIT(newPin->setPwmLimits(1099,1900), testing::ExitedWithCode(42), 
+        "Invalid min pwm value! Attempted to set to 1099 which is out of range \\[1100,1900\\]. Exiting.");
+}
+
+TEST(CommandInterpreterTest, LimitTooHigh) {
+    std::ofstream outLog("/dev/null");
+
+    auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
+    ASSERT_EXIT(newPin->setPwmLimits(1100,1901), testing::ExitedWithCode(42), 
+        "Invalid max pwm value! Attempted to set to 1901 which is out of range \\[1100,1900\\]. Exiting.");
+}
+
+TEST(CommandInterpreterTest, BadLimitsMaxLessThanMin) {
+    std::ofstream outLog("/dev/null");
+
+    auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
+    ASSERT_EXIT(newPin->setPwmLimits(1900,1100), testing::ExitedWithCode(42), 
+        "Invalid limits! max \\(value 1100\\) is smaller than min \\(value 1900\\). Exiting.");
+}
+
+TEST(CommandInterpreterTest, HardwarePWMTooLarge) {
+    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
+    std::ofstream outLog("/dev/null");
+    int serial = -1;
+    initializeSerial(&serial, true);
+
+    const pwm_array pwms = {1900, 1900, 1900, 1900, 1900, 1900, 1900, 1900};
+
+    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+
+    auto pins = std::vector<PwmPin *>{};
+
+    for (int pinNumber: pinNumbers) {
+        auto newPin = new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr);
+        newPin->setPwmLimits(1200,1800);
+        pins.push_back(newPin);
+    }
+
+    WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
+
+    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{}, wiringControl, std::cout, outLog,
+                                                    std::cerr);
+    interpreter->initializePins();
+    interpreter->untimed_execute(pwms);
+    std::string error = testing::internal::GetCapturedStderr();
+    testing::internal::GetCapturedStdout();
+    auto pinStatus = interpreter->readPins();
+
+    delete interpreter;
+
+    std::string expectedError;
+    for (int pinNumber : pinNumbers){
+        expectedError.append("PWM out of bounds! Value 1900 is out of bounds for range [1200,1800]. Setting to closest valid value.\n");
+    } 
+
+    ASSERT_EQ(pinStatus, (std::vector<int>{1800, 1800, 1800, 1800, 1800, 1800, 1800, 1800}));
+    ASSERT_EQ(error, expectedError);
+}
+
+TEST(CommandInterpreterTest, HardwarePWMTooSmall) {
+    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
+    std::ofstream outLog("/dev/null");
+    int serial = -1;
+    initializeSerial(&serial, true);
+
+    const pwm_array pwms = {1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100};
+
+    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+
+    auto pins = std::vector<PwmPin *>{};
+
+    for (int pinNumber: pinNumbers) {
+        auto newPin = new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr);
+        newPin->setPwmLimits(1200,1800);
+        pins.push_back(newPin);
+    }
+
+    WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
+
+    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{}, wiringControl, std::cout, outLog,
+                                                    std::cerr);
+    interpreter->initializePins();
+    interpreter->untimed_execute(pwms);
+    std::string error = testing::internal::GetCapturedStderr();
+    testing::internal::GetCapturedStdout();
+    auto pinStatus = interpreter->readPins();
+
+    delete interpreter;
+
+    std::string expectedError;
+    for (int pinNumber : pinNumbers){
+        expectedError.append("PWM out of bounds! Value 1100 is out of bounds for range [1200,1800]. Setting to closest valid value.\n");
+    } 
+
+    ASSERT_EQ(pinStatus, (std::vector<int>{1200, 1200, 1200, 1200, 1200, 1200, 1200, 1200}));
+    ASSERT_EQ(error, expectedError);
+}
