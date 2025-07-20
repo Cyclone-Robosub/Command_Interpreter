@@ -83,20 +83,20 @@ void PwmPin::setPwmLimits(int min, int max) {
                 min << "). Exiting." << std::endl;
             exit(42);
         }
-        if (min >= 1100 && min <= 1900) {
+        if (min >= 1200 && min <= 1800) {
             minPwmValue = min;
         }
         else {
             errorLog << "Invalid min pwm value! Attempted to set to " << min <<
-                " which is out of range [1100,1900]. Exiting." << std::endl;
+                " which is out of range [1200,1800]. Exiting." << std::endl;
             exit(42);
         }
-        if (max >= 1100 && max <= 1900) {
+        if (max >= 1200 && max <= 1800) {
             maxPwmValue = max;
         }
         else {
             errorLog << "Invalid max pwm value! Attempted to set to " << max <<
-                " which is out of range [1100,1900]. Exiting." << std::endl;
+                " which is out of range [1200,1800]. Exiting." << std::endl;
             exit(42);
         }
     }
