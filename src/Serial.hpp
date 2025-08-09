@@ -14,7 +14,7 @@ int serialOpen(const char *device, const int baud);
 void serialPuts(const int fd, const char *s);
 int serialGetchar (const int fd);
 void echoOn(int serial);
-bool initializeSerial(int *serial);
-int getSerialChar(int *serial);
+bool initializeSerial(int *serial, bool testing);
+int getSerialChar(int *serial, bool testing);
 
 #endif

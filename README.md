@@ -62,7 +62,7 @@ Installation for these prerequisites varies from system to system. You can check
 - Code that we write lives in `src/`.
 - Code that we write for unit testing (to make sure our code is correct) lives in `testing/`.
 - Other libraries that we use have their own directories as well, named correspondingly.
-- You'll make your own `build/` folder (see **"Using Cmake to Build Code"**)
+- You'll make your own `build/` folder (see **"Using CMake to Build Code"**)
 - `CMakeLists.txt` and `README.md` (this file!) live on the same level as the directories listed above.
 
 ### Basic Terminal Commands
@@ -148,7 +148,7 @@ Once it's set up, take some time to get used to the terminal environment. Try mo
 Command_Interpreter is designed to run on a Raspberry Pi 5 (or 4). It is used to get commands from a main executive and send them to a Raspberry Pi Pico, which will set PWM values to control thruster speed and direction. This code won't run (outside of a testing build) unless it has a Raspberry Pi Pico attached via USB.
 
 ## Necessary Setup
-To run this code, you must have WiringPi installed. Additionally, you will need to update the ID of the Rasberry Pi Pico in the `Command_Interpreter_Testing` and `Wiring.cpp` files to the corresponding name (found in `\dev\serial\by-id\`). The Pico should be running the code from the MicroPython Pool Testing repo (https://github.com/Cyclone-Robosub/micro-python-pool-test/).
+To run this code, you will need to update the ID of the Rasberry Pi Pico in the `Command_Interpreter_Testing` and `Wiring.cpp` files to the corresponding name (found in `\dev\serial\by-id\`). The Pico should be running the code from the MicroPython Pool Testing repo (https://github.com/Cyclone-Robosub/micro-python-pool-test/).
 
 ## Command_Intepreter.*
 These and `Command.hpp` are the only files that contains code that you should have to actively interact with. Functions should be heavily documented, so it is encouraged to hover over function names to see what parameters represent and how functions should be used.

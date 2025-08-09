@@ -66,11 +66,40 @@ int DigitalPin::read(WiringControl &wiringControl) {
 }
 
 void PwmPin::setPwm(int pulseWidth, WiringControl &wiringControl) {
+    if (pulseWidth > maxPwmValue || pulseWidth < minPwmValue) {
+        errorLog << "PWM out of bounds! Value " << pulseWidth << " is out of bounds for range [" <<
+            minPwmValue << "," << maxPwmValue << "]. Setting to closest valid value." << std::endl;
+        pulseWidth = (pulseWidth > maxPwmValue) ? maxPwmValue : minPwmValue;
+    }
     setPowerAndDirection(pulseWidth, wiringControl);
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     outLog << "Current time: " << std::ctime(&currentTime) << std::endl;
     outLog << "Thruster at pin " << gpioNumber << ": " << pulseWidth << std::endl;
 }
+
+void PwmPin::setPwmLimits(int min, int max) {
+        if (max < min) {
+            errorLog << "Invalid limits! max (value " << max << ") is smaller than min (value " <<
+                min << "). Exiting." << std::endl;
+            exit(42);
+        }
+        if (min >= 1200 && min <= 1800) {
+            minPwmValue = min;
+        }
+        else {
+            errorLog << "Invalid min pwm value! Attempted to set to " << min <<
+                " which is out of range [1200,1800]. Exiting." << std::endl;
+            exit(42);
+        }
+        if (max >= 1200 && max <= 1800) {
+            maxPwmValue = max;
+        }
+        else {
+            errorLog << "Invalid max pwm value! Attempted to set to " << max <<
+                " which is out of range [1200,1800]. Exiting." << std::endl;
+            exit(42);
+        }
+    }
 
 
 void HardwarePwmPin::initialize(WiringControl &wiringControl) {
@@ -121,6 +150,7 @@ void SoftwarePwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringCon
 int SoftwarePwmPin::read(WiringControl &wiringControl) {
     return wiringControl.pwmRead(gpioNumber).pulseWidth;
 }
+
 
 Command_Interpreter_RPi5::Command_Interpreter_RPi5(std::vector<PwmPin *> thrusterPins,
                                                    std::vector<DigitalPin *> digitalPins,
