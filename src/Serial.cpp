@@ -66,8 +66,8 @@ int serialOpen(const char *device, const int baud) { //from WiringPi
     options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG) ;
     options.c_oflag &= ~OPOST ;
 
-    options.c_cc [VMIN]  = 0 ;
-    options.c_cc [VTIME] = 1 ;	// 1/10 second (1 decisecond)
+    options.c_cc [VMIN]  =   0 ;
+    options.c_cc [VTIME] = 100 ;	// Ten seconds (100 deciseconds)
 
   tcsetattr (fd, TCSANOW, &options) ;
 
@@ -106,25 +106,21 @@ void echoOn(int serial) {
 }
 
 
-<<<<<<< HEAD
 bool initializeSerial(int *serial) {
+    // usb-MicroPython_Board_in_FS_mode_e6614864d3798738-if00
+
     if ((*serial = serialOpen("/dev/serial/by-id/usb-MicroPython_Board_in_FS_mode_e6614864d3798738-if00", 115200)) <
-=======
-bool initializeSerial(int *serial, bool testing) {
-    if ((*serial = serialOpen("/dev/serial/by-id/usb-MicroPython_Board_in_FS_mode_e6605838836bb12f-if00", 115200)) <
->>>>>>> 031e01997883992104c95ad327ac5ab11da9e31c
         0) {
         return false;
     }
-    if (testing) {
-        echoOn(*serial);
-    }
+    echoOn(*serial);
     return true;
 }
 
-int getSerialChar(int *serial, bool testing) {
+int getSerialChar(int *serial) {
     if (*serial == -1) {
-        if (!initializeSerial(serial, testing)) {
+        if (!initializeSerial
+                (serial)) {
             std::cerr << "Unable to open serial port! Exiting." << std::endl;
             exit(42);
         }
