@@ -115,10 +115,10 @@ bool initializeSerial(int *serial, bool testing) {
     return true;
 }
 
-int getSerialChar(int *serial) {
+int getSerialChar(int *serial, bool testing) {
     if (*serial == -1) {
         if (!initializeSerial
-                (serial)) {
+                (serial, testing)) {
             std::cerr << "Unable to open serial port! Exiting." << std::endl;
             exit(42);
         }
