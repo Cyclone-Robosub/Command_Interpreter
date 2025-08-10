@@ -66,8 +66,8 @@ int serialOpen(const char *device, const int baud) { //from WiringPi
     options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG) ;
     options.c_oflag &= ~OPOST ;
 
-    options.c_cc [VMIN]  = 0 ;
-    options.c_cc [VTIME] = 1 ;	// 1/10 second (1 decisecond)
+    options.c_cc [VMIN]  =   0 ;
+    options.c_cc [VTIME] = 100 ;	// Ten seconds (100 deciseconds)
 
   tcsetattr (fd, TCSANOW, &options) ;
 
@@ -111,15 +111,14 @@ bool initializeSerial(int *serial, bool testing) {
         0) {
         return false;
     }
-    if (testing) {
-        echoOn(*serial);
-    }
+    echoOn(*serial);
     return true;
 }
 
-int getSerialChar(int *serial, bool testing) {
+int getSerialChar(int *serial) {
     if (*serial == -1) {
-        if (!initializeSerial(serial, testing)) {
+        if (!initializeSerial
+                (serial)) {
             std::cerr << "Unable to open serial port! Exiting." << std::endl;
             exit(42);
         }
