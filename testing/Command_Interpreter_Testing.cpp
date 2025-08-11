@@ -313,16 +313,16 @@ TEST(CommandInterpreterTest, LimitTooLow) {
     std::ofstream outLog("/dev/null");
 
     auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
-    ASSERT_EXIT(newPin->setPwmLimits(1099,1900), testing::ExitedWithCode(42), 
-        "Invalid min pwm value! Attempted to set to 1099 which is out of range \\[1100,1900\\]. Exiting.");
+    ASSERT_EXIT(newPin->setPwmLimits(1199,1800), testing::ExitedWithCode(42), 
+        "Invalid min pwm value! Attempted to set to 1199 which is out of range \\[1200,1800\\]. Exiting.");
 }
 
 TEST(CommandInterpreterTest, LimitTooHigh) {
     std::ofstream outLog("/dev/null");
 
     auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
-    ASSERT_EXIT(newPin->setPwmLimits(1100,1901), testing::ExitedWithCode(42), 
-        "Invalid max pwm value! Attempted to set to 1901 which is out of range \\[1100,1900\\]. Exiting.");
+    ASSERT_EXIT(newPin->setPwmLimits(1200,1801), testing::ExitedWithCode(42), 
+        "Invalid max pwm value! Attempted to set to 1801 which is out of range \\[1200,1800\\]. Exiting.");
 }
 
 TEST(CommandInterpreterTest, BadLimitsMaxLessThanMin) {
