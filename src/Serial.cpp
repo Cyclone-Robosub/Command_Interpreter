@@ -67,7 +67,7 @@ int serialOpen(const char *device, const int baud) { //from WiringPi
     options.c_oflag &= ~OPOST ;
 
     options.c_cc [VMIN]  =   0 ;
-    options.c_cc [VTIME] = 100 ;	// Ten seconds (100 deciseconds)
+    options.c_cc [VTIME] =   1 ;	// Ten seconds (100 deciseconds)
 
   tcsetattr (fd, TCSANOW, &options) ;
 
@@ -78,7 +78,7 @@ int serialOpen(const char *device, const int baud) { //from WiringPi
 
   ioctl (fd, TIOCMSET, &status);
 
-  usleep (10000) ;	// 10mS
+  usleep (100000) ;	// 1000mS
 
   return fd ;
 }
@@ -111,7 +111,9 @@ bool initializeSerial(int *serial, bool testing) {
         0) {
         return false;
     }
-    echoOn(*serial);
+    if (testing) {
+        echoOn(*serial);
+    }
     return true;
 }
 

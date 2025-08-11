@@ -23,7 +23,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreter) {
     int serial = -1;
     initializeSerial(&serial, true);
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
@@ -72,7 +72,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreterWithDigitalPins) {
     int serial = -1;
     initializeSerial(&serial, true);
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pwmPins = std::vector<PwmPin *>{};
 
@@ -128,7 +128,7 @@ TEST(CommandInterpreterTest, UntimedExecute) {
 
     const pwm_array pwms = {1900, 1900, 1100, 1250, 1300, 1464, 1535, 1536};
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
@@ -155,14 +155,14 @@ TEST(CommandInterpreterTest, UntimedExecute) {
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
-    expectedOutput.append("Set 4 PWM 1900\n");
-    expectedOutput.append("Set 5 PWM 1900\n");
-    expectedOutput.append("Set 2 PWM 1100\n");
-    expectedOutput.append("Set 3 PWM 1250\n");
-    expectedOutput.append("Set 9 PWM 1300\n");
-    expectedOutput.append("Set 7 PWM 1464\n");
-    expectedOutput.append("Set 8 PWM 1535\n");
-    expectedOutput.append("Set 6 PWM 1536\n");
+    expectedOutput.append("Set 8 PWM 1900\n");
+    expectedOutput.append("Set 9 PWM 1900\n");
+    expectedOutput.append("Set 6 PWM 1100\n");
+    expectedOutput.append("Set 7 PWM 1250\n");
+    expectedOutput.append("Set 13 PWM 1300\n");
+    expectedOutput.append("Set 11 PWM 1464\n");
+    expectedOutput.append("Set 12 PWM 1535\n");
+    expectedOutput.append("Set 10 PWM 1536\n");
 
     int charRead = EOF;
     std::string serialOutput;
@@ -188,7 +188,7 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
                                            1250, 1300, 1464, 1535,
                                            1536, std::chrono::milliseconds(2000)};
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
@@ -217,14 +217,14 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
-    expectedOutput.append("Set 4 PWM 1900\n");
-    expectedOutput.append("Set 5 PWM 1900\n");
-    expectedOutput.append("Set 2 PWM 1100\n");
-    expectedOutput.append("Set 3 PWM 1250\n");
-    expectedOutput.append("Set 9 PWM 1300\n");
-    expectedOutput.append("Set 7 PWM 1464\n");
-    expectedOutput.append("Set 8 PWM 1535\n");
-    expectedOutput.append("Set 6 PWM 1536\n");
+    expectedOutput.append("Set 8 PWM 1900\n");
+    expectedOutput.append("Set 9 PWM 1900\n");
+    expectedOutput.append("Set 6 PWM 1100\n");
+    expectedOutput.append("Set 7 PWM 1250\n");
+    expectedOutput.append("Set 13 PWM 1300\n");
+    expectedOutput.append("Set 11 PWM 1464\n");
+    expectedOutput.append("Set 12 PWM 1535\n");
+    expectedOutput.append("Set 10 PWM 1536\n");
 
     int charRead = EOF;
     std::string serialOutput;
@@ -253,7 +253,7 @@ TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
                                            1250, 1300, 1464, 1535,
                                            1536, std::chrono::milliseconds(2000)};
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
@@ -282,14 +282,14 @@ TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
-    expectedOutput.append("Set 4 PWM 1100\n");
-    expectedOutput.append("Set 5 PWM 1900\n");
-    expectedOutput.append("Set 2 PWM 1100\n");
-    expectedOutput.append("Set 3 PWM 1250\n");
-    expectedOutput.append("Set 9 PWM 1300\n");
-    expectedOutput.append("Set 7 PWM 1464\n");
-    expectedOutput.append("Set 8 PWM 1535\n");
-    expectedOutput.append("Set 6 PWM 1536\n");
+    expectedOutput.append("Set 8 PWM 1100\n");
+    expectedOutput.append("Set 9 PWM 1900\n");
+    expectedOutput.append("Set 6 PWM 1100\n");
+    expectedOutput.append("Set 7 PWM 1250\n");
+    expectedOutput.append("Set 13 PWM 1300\n");
+    expectedOutput.append("Set 11 PWM 1464\n");
+    expectedOutput.append("Set 12 PWM 1535\n");
+    expectedOutput.append("Set 10 PWM 1536\n");
 
     int charRead = EOF;
     std::string serialOutput;
@@ -342,7 +342,7 @@ TEST(CommandInterpreterTest, HardwarePWMTooLarge) {
 
     const pwm_array pwms = {1900, 1900, 1900, 1900, 1900, 1900, 1900, 1900};
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
@@ -382,7 +382,7 @@ TEST(CommandInterpreterTest, HardwarePWMTooSmall) {
 
     const pwm_array pwms = {1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100};
 
-    auto pinNumbers = std::vector<int>{4, 5, 2, 3, 9, 7, 8, 6};
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
