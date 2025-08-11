@@ -77,7 +77,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreterWithDigitalPins) {
     auto pwmPins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pwmPins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr));
+        pwmPins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -133,7 +133,7 @@ TEST(CommandInterpreterTest, UntimedExecute) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr));
+        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -193,7 +193,7 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr));
+        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -258,7 +258,7 @@ TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pins.push_back(new SoftwarePwmPin(pinNumber, std::cout, outLog, std::cerr));
+        pins.push_back(new SoftwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -313,16 +313,16 @@ TEST(CommandInterpreterTest, LimitTooLow) {
     std::ofstream outLog("/dev/null");
 
     auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
-    ASSERT_EXIT(newPin->setPwmLimits(1199,1800), testing::ExitedWithCode(42), 
-        "Invalid min pwm value! Attempted to set to 1199 which is out of range \\[1200,1800\\]. Exiting.");
+    ASSERT_EXIT(newPin->setPwmLimits(1099,1800), testing::ExitedWithCode(42), 
+        "Invalid min pwm value! Attempted to set to 1099 which is out of range \\[1100,1900\\]. Exiting.");
 }
 
 TEST(CommandInterpreterTest, LimitTooHigh) {
     std::ofstream outLog("/dev/null");
 
     auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
-    ASSERT_EXIT(newPin->setPwmLimits(1200,1801), testing::ExitedWithCode(42), 
-        "Invalid max pwm value! Attempted to set to 1801 which is out of range \\[1200,1800\\]. Exiting.");
+    ASSERT_EXIT(newPin->setPwmLimits(1100,1901), testing::ExitedWithCode(42), 
+        "Invalid max pwm value! Attempted to set to 1901 which is out of range \\[1100,1900\\]. Exiting.");
 }
 
 TEST(CommandInterpreterTest, BadLimitsMaxLessThanMin) {
@@ -387,7 +387,7 @@ TEST(CommandInterpreterTest, HardwarePWMTooSmall) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        auto newPin = new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr);
+        auto newPin = new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1000, 1900);
         newPin->setPwmLimits(1200,1800);
         pins.push_back(newPin);
     }

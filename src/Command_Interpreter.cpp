@@ -78,28 +78,32 @@ void PwmPin::setPwm(int pulseWidth, WiringControl &wiringControl) {
 }
 
 void PwmPin::setPwmLimits(int min, int max) {
-        if (max < min) {
-            errorLog << "Invalid limits! max (value " << max << ") is smaller than min (value " <<
-                min << "). Exiting." << std::endl;
-            exit(42);
-        }
-        if (min >= 1200 && min <= 1800) {
-            minPwmValue = min;
-        }
-        else {
-            errorLog << "Invalid min pwm value! Attempted to set to " << min <<
-                " which is out of range [1200,1800]. Exiting." << std::endl;
-            exit(42);
-        }
-        if (max >= 1200 && max <= 1800) {
-            maxPwmValue = max;
-        }
-        else {
-            errorLog << "Invalid max pwm value! Attempted to set to " << max <<
-                " which is out of range [1200,1800]. Exiting." << std::endl;
-            exit(42);
-        }
+    // These are hardware-enforced limits, i.e. a PWM value of less than 1100 or greater than 1900 don't make sense.
+    // If we want to restrict our range, this should be done by calling this function. If that's bothersome because they
+    // have to be set for every pin, I recommend changing the default values in the constructor for PwmPin rather than
+    // the bounds here.
+    if (max < min) {
+        errorLog << "Invalid limits! max (value " << max << ") is smaller than min (value " <<
+            min << "). Exiting." << std::endl;
+        exit(42);
     }
+    if (min >= 1100 && min <= 1900) {
+        minPwmValue = min;
+    }
+    else {
+        errorLog << "Invalid min pwm value! Attempted to set to " << min <<
+            " which is out of range [1100,1900]. Exiting." << std::endl;
+        exit(42);
+    }
+    if (max >= 1100 && max <= 1900) {
+        maxPwmValue = max;
+    }
+    else {
+        errorLog << "Invalid max pwm value! Attempted to set to " << max <<
+            " which is out of range [1100,1900]. Exiting." << std::endl;
+        exit(42);
+    }
+}
 
 
 void HardwarePwmPin::initialize(WiringControl &wiringControl) {

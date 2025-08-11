@@ -95,8 +95,8 @@ public:
     virtual void setPwm(int frequency, WiringControl &wiringControl);
 
     /// @brief Sets the minimum and maximum allowed PWM values
-    /// @param min the minimum PWM value allowed
-    /// @param max the maximum PWM value allowed
+    /// @param min the minimum PWM value allowed. Must be at least 1100 and at most 1900.
+    /// @param max the maximum PWM value allowed. Must be at least 1100 and at most 1900.
     void setPwmLimits(int min, int max);
 
     /// @param gpioNumber the Pico GPIO number for the pin (see https://pico.pinout.xyz/ and look for GPX labels in green)
@@ -104,7 +104,18 @@ public:
     /// @param outLog where you want logging (not error) messages to be logged
     /// @param errorLog where you want error messages to be logged
     explicit PwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog) : Pin(
-            gpioNumber, output, outLog, errorLog), maxPwmValue(1900), minPwmValue(1100) {} // start max/mins as hardware max/mins
+            gpioNumber, output, outLog, errorLog), maxPwmValue(1800), minPwmValue(1200) {} // Range [1200,1800] to avoid motors drawing too much power
+    
+    /// @param gpioNumber the Pico GPIO number for the pin (see https://pico.pinout.xyz/ and look for GPX labels in green)
+    /// @param output where you want output (not logging) messages to be sent (probably std::cout)
+    /// @param outLog where you want logging (not error) messages to be logged
+    /// @param errorLog where you want error messages to be logged
+    /// @param min the minimum PWM value allowed.
+    /// @param max the maximum PWM value allowed.
+    explicit PwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog,
+                    int minPwmValue, int maxPwmValue) : Pin(
+            gpioNumber, output, outLog, errorLog), minPwmValue(minPwmValue), maxPwmValue(maxPwmValue) {}
+
 
     virtual ~PwmPin() = default;
 };
@@ -133,6 +144,16 @@ public:
     /// @param errorLog where you want error messages to be logged
     explicit HardwarePwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog)
             : PwmPin(gpioNumber, output, outLog, errorLog) {};
+    
+    /// @param gpioNumber the Pico GPIO number for the pin (see https://pico.pinout.xyz/ and look for GPX labels in green)
+    /// @param output where you want output (not logging) messages to be sent (probably std::cout)
+    /// @param outLog where you want logging (not error) messages to be logged
+    /// @param errorLog where you want error messages to be logged
+    /// @param min the minimum PWM value allowed.
+    /// @param max the maximum PWM value allowed.
+    explicit HardwarePwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog,
+                            int minPwmValue, int maxPwmValue)
+            : PwmPin(gpioNumber, output, outLog, errorLog, minPwmValue, maxPwmValue) {};
 };
 
 /// @brief a Raspberry Pi Pico GPIO pin that doesn't natively support PWM, but that will simulate analogue output
@@ -159,6 +180,18 @@ public:
     /// @param errorLog where you want error messages to be logged
     explicit SoftwarePwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog)
             : PwmPin(gpioNumber, output, outLog, errorLog) {};
+    
+    /// @param gpioNumber the Pico GPIO number for the pin (see https://pico.pinout.xyz/ and look for GPX labels in green)
+    /// @param output where you want output (not logging) messages to be sent (probably std::cout)
+    /// @param outLog where you want logging (not error) messages to be logged
+    /// @param errorLog where you want error messages to be logged
+    /// @param min the minimum PWM value allowed.
+    /// @param max the maximum PWM value allowed.
+
+    explicit SoftwarePwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog,
+                            int minPwmValue, int maxPwmValue)
+            : PwmPin(gpioNumber, output, outLog, errorLog, minPwmValue, maxPwmValue) {};
+
 };
 
 /// @brief The purpose of this class is toggle the GPIO pins on the Raspberry Pi based on a command object.
