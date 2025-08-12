@@ -86,8 +86,8 @@ protected:
     /// @brief Sets pin to the specified pwm value and direction
     /// @param pwmValue a pwm value dictating the power and direction for the thruster
     virtual void setPowerAndDirection(int pwmValue, WiringControl &wiringControl) = 0;
-    int maxPwmValue;
     int minPwmValue;
+    int maxPwmValue;
 
 public:
     /// @brief Sets pin to given pwm frequency
@@ -104,7 +104,7 @@ public:
     /// @param outLog where you want logging (not error) messages to be logged
     /// @param errorLog where you want error messages to be logged
     explicit PwmPin(int gpioNumber, std::ostream &output, std::ostream &outLog, std::ostream &errorLog) : Pin(
-            gpioNumber, output, outLog, errorLog), maxPwmValue(1800), minPwmValue(1200) {} // Range [1200,1800] to avoid motors drawing too much power
+            gpioNumber, output, outLog, errorLog), minPwmValue(1200), maxPwmValue(1800) {} // Range [1200,1800] to avoid motors drawing too much power
     
     /// @param gpioNumber the Pico GPIO number for the pin (see https://pico.pinout.xyz/ and look for GPX labels in green)
     /// @param output where you want output (not logging) messages to be sent (probably std::cout)
