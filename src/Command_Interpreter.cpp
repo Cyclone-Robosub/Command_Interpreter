@@ -65,6 +65,8 @@ int DigitalPin::read(WiringControl &wiringControl) {
     return wiringControl.digitalRead(gpioNumber);
 }
 
+
+
 void PwmPin::setPwm(int pulseWidth, WiringControl &wiringControl) {
     if (pulseWidth > maxPwmValue || pulseWidth < minPwmValue) {
         errorLog << "PWM out of bounds! Value " << pulseWidth << " is out of bounds for range [" <<
@@ -105,7 +107,6 @@ void PwmPin::setPwmLimits(int min, int max) {
     }
 }
 
-
 void PwmPin::initialize(WiringControl &wiringControl) {
     wiringControl.setPinType(gpioNumber, PWM);
 }
@@ -117,6 +118,8 @@ void PwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
 int PwmPin::read(WiringControl &wiringControl) {
     return wiringControl.pwmRead(gpioNumber).pulseWidth;
 }
+
+
 
 Command_Interpreter_RPi5::Command_Interpreter_RPi5(std::vector<PwmPin *> thrusterPins,
                                                    std::vector<DigitalPin *> digitalPins,
@@ -162,7 +165,7 @@ Command_Interpreter_RPi5::~Command_Interpreter_RPi5() {
     }
 }
 
-void Command_Interpreter_RPi5::timed_execute(const CommandComponent &commandComponent) {
+void Command_Interpreter_RPi5::timed_execute(const Command &commandComponent) {
     isInterruptTimed_Execute = false;
     auto endTime = std::chrono::system_clock::now() + commandComponent.duration;
     auto currentTime = std::chrono::system_clock::now();

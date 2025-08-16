@@ -1,5 +1,6 @@
 // William Barber
-#pragma once
+#ifndef COMMAND_INTERPRETER_HPP
+#define COMMAND_INTERPRETER_HPP
 
 #include "Command.hpp"
 #include "Wiring.hpp"
@@ -146,7 +147,7 @@ public:
     /// @brief Executes a command without self-correction. Sets pwm values for the duration specified. Does not stop
     /// thrusters after execution.
     /// @param command a command struct with three sub-components: the acceleration, steady-state, and deceleration.
-    void timed_execute(const CommandComponent &command);
+    void timed_execute(const Command &command);
 
     /// @brief Get the current pwm values of all the pins.
     /// @return A vector containing the current value of all pins. PWM pins will return a value in the range [1100, 1900]
@@ -158,3 +159,4 @@ public:
     ~Command_Interpreter_RPi5(); //TODO this also deletes all its pins. Not sure if this is desirable or not?
 };
 
+#endif

@@ -1,6 +1,6 @@
 // William Barber
-
-#pragma once
+#ifndef WIRING_HPP 
+#define WIRING_HPP
 
 #include <unordered_map>
 #include <fstream>
@@ -81,3 +81,5 @@ public:
 
     ~WiringControl();
 };
+
+#endif

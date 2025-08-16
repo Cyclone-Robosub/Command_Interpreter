@@ -1,4 +1,6 @@
 #ifndef MOCK_RPI
+#ifndef SERIAL_HPP
+#define SERIAL_HPP
 
 #include <fcntl.h>
 #include <errno.h>
@@ -17,4 +19,5 @@ void echoOn(int serial);
 bool initializeSerial(int *serial, bool testing);
 int getSerialChar(int *serial, bool testing);
 
+#endif
 #endif
