@@ -7,7 +7,7 @@
 
 /// @brief What purpose the given pin is configured for
 enum PinType {
-    DigitalActiveLow, DigitalActiveHigh, HardwarePWM, SoftwarePWM
+    DigitalActiveLow, DigitalActiveHigh, PWM
 };
 
 /// @brief Whether a digital pin is currently low or high

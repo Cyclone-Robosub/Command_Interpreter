@@ -21,7 +21,7 @@ void DigitalPin::initialize(WiringControl &wiringControl) {
     }
 }
 
-void DigitalPin::enable(WiringControl &wiringControl) {
+void DigitalPin::activate(WiringControl &wiringControl) {
     switch (enableType) {
         case ActiveHigh:
             wiringControl.digitalWrite(gpioNumber, High);
@@ -35,7 +35,7 @@ void DigitalPin::enable(WiringControl &wiringControl) {
     }
 }
 
-void DigitalPin::disable(WiringControl &wiringControl) {
+void DigitalPin::deactivate(WiringControl &wiringControl) {
     switch (enableType) {
         case ActiveHigh:
             wiringControl.digitalWrite(gpioNumber, Low);
@@ -106,55 +106,17 @@ void PwmPin::setPwmLimits(int min, int max) {
 }
 
 
-void HardwarePwmPin::initialize(WiringControl &wiringControl) {
-    wiringControl.setPinType(gpioNumber, HardwarePWM);
+void PwmPin::initialize(WiringControl &wiringControl) {
+    wiringControl.setPinType(gpioNumber, PWM);
 }
 
-void HardwarePwmPin::enable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteMaximum(gpioNumber);
-}
-
-void HardwarePwmPin::disable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteOff(gpioNumber);
-}
-
-bool HardwarePwmPin::enabled(WiringControl &wiringControl) {
-    return wiringControl.pwmRead(gpioNumber).pulseWidth != 1500;
-}
-
-void HardwarePwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
+void PwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
     wiringControl.pwmWrite(gpioNumber, pwmValue);
 }
 
-int HardwarePwmPin::read(WiringControl &wiringControl) {
+int PwmPin::read(WiringControl &wiringControl) {
     return wiringControl.pwmRead(gpioNumber).pulseWidth;
 }
-
-
-void SoftwarePwmPin::initialize(WiringControl &wiringControl) {
-    wiringControl.setPinType(gpioNumber, SoftwarePWM);
-}
-
-void SoftwarePwmPin::enable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteMaximum(gpioNumber);
-}
-
-void SoftwarePwmPin::disable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteOff(gpioNumber);
-}
-
-bool SoftwarePwmPin::enabled(WiringControl &wiringControl) {
-    return wiringControl.pwmRead(gpioNumber).pulseWidth != 1500;
-}
-
-void SoftwarePwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
-    wiringControl.pwmWrite(gpioNumber, pwmValue);
-}
-
-int SoftwarePwmPin::read(WiringControl &wiringControl) {
-    return wiringControl.pwmRead(gpioNumber).pulseWidth;
-}
-
 
 Command_Interpreter_RPi5::Command_Interpreter_RPi5(std::vector<PwmPin *> thrusterPins,
                                                    std::vector<DigitalPin *> digitalPins,
