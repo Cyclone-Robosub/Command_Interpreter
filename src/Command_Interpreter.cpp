@@ -73,7 +73,7 @@ void PwmPin::setPwm(int pulseWidth, WiringControl &wiringControl) {
             minPwmValue << "," << maxPwmValue << "]. Setting to closest valid value." << std::endl;
         pulseWidth = (pulseWidth > maxPwmValue) ? maxPwmValue : minPwmValue;
     }
-    setPWM(pulseWidth, wiringControl);
+    wiringControl.pwmWrite(gpioNumber, pulseWidth);
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     outLog << "Current time: " << std::ctime(&currentTime) << std::endl;
     outLog << "Thruster at pin " << gpioNumber << ": " << pulseWidth << std::endl;
@@ -109,10 +109,6 @@ void PwmPin::setPwmLimits(int min, int max) {
 
 void PwmPin::initialize(WiringControl &wiringControl) {
     wiringControl.setPinType(gpioNumber, PWM);
-}
-
-void PwmPin::setPWM(int pwmValue, WiringControl &wiringControl) {
-    wiringControl.pwmWrite(gpioNumber, pwmValue);
 }
 
 int PwmPin::read(WiringControl &wiringControl) {
