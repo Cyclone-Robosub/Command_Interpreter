@@ -2,6 +2,11 @@
 
 #include "Serial.hpp"
 
+/*
+ * Functions commented "//from WiringPi" are either taken directly from WiringPi, or are modified versions
+ * of those functions. WiringPi can be found on GitHub at https://github.com/WiringPi/WiringPi, and is licensed
+ * under the LGPL-3.0 license.
+*/
 
 int serialOpen(const char *device, const int baud) { //from WiringPi
   struct termios options ;
@@ -67,7 +72,7 @@ int serialOpen(const char *device, const int baud) { //from WiringPi
     options.c_oflag &= ~OPOST ;
 
     options.c_cc [VMIN]  =   0 ;
-    options.c_cc [VTIME] =   1 ;	// Ten seconds (100 deciseconds)
+    options.c_cc [VTIME] =   1 ;	// 1/10 (1 decisecond)
 
   tcsetattr (fd, TCSANOW, &options) ;
 

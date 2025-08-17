@@ -73,7 +73,7 @@ void PwmPin::setPwm(int pulseWidth, WiringControl &wiringControl) {
             minPwmValue << "," << maxPwmValue << "]. Setting to closest valid value." << std::endl;
         pulseWidth = (pulseWidth > maxPwmValue) ? maxPwmValue : minPwmValue;
     }
-    setPowerAndDirection(pulseWidth, wiringControl);
+    setPWM(pulseWidth, wiringControl);
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     outLog << "Current time: " << std::ctime(&currentTime) << std::endl;
     outLog << "Thruster at pin " << gpioNumber << ": " << pulseWidth << std::endl;
@@ -111,7 +111,7 @@ void PwmPin::initialize(WiringControl &wiringControl) {
     wiringControl.setPinType(gpioNumber, PWM);
 }
 
-void PwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
+void PwmPin::setPWM(int pwmValue, WiringControl &wiringControl) {
     wiringControl.pwmWrite(gpioNumber, pwmValue);
 }
 
@@ -165,7 +165,7 @@ Command_Interpreter_RPi5::~Command_Interpreter_RPi5() {
     }
 }
 
-void Command_Interpreter_RPi5::timed_execute(const Command &commandComponent) {
+void Command_Interpreter_RPi5::timed_execute(const Timed_Command &commandComponent) {
     isInterruptTimed_Execute = false;
     auto endTime = std::chrono::system_clock::now() + commandComponent.duration;
     auto currentTime = std::chrono::system_clock::now();

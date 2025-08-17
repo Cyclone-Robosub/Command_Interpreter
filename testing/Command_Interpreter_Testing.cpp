@@ -184,7 +184,7 @@ TEST(CommandInterpreterTest, BlindExecutePwm) {
     int serial = -1;
     initializeSerial(&serial, true);
 
-    const Command acceleration = {1900, 1900, 1100,
+    const Timed_Command acceleration = {1900, 1900, 1100,
                                            1250, 1300, 1464, 1535,
                                            1536, std::chrono::milliseconds(2000)};
 

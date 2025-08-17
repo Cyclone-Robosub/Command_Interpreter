@@ -74,7 +74,7 @@ class PwmPin : public Pin {
 protected:
     /// @brief Sets pin to the specified pwm value and direction
     /// @param pwmValue a pwm value dictating the power and direction for the thruster
-    void setPowerAndDirection(int pwmValue, WiringControl &wiringControl);
+    void setPWM(int pwmValue, WiringControl &wiringControl);
     int minPwmValue;
     int maxPwmValue;
 
@@ -147,7 +147,7 @@ public:
     /// @brief Executes a command without self-correction. Sets pwm values for the duration specified. Does not stop
     /// thrusters after execution.
     /// @param command a command struct with three sub-components: the acceleration, steady-state, and deceleration.
-    void timed_execute(const Command &command);
+    void timed_execute(const Timed_Command &command);
 
     /// @brief Get the current pwm values of all the pins.
     /// @return A vector containing the current value of all pins. PWM pins will return a value in the range [1100, 1900]
