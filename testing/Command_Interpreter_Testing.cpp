@@ -178,13 +178,13 @@ TEST(CommandInterpreterTest, UntimedExecute) {
     }
 }
 
-TEST(CommandInterpreterTest, BlindExecutePwm) {
+TEST(CommandInterpreterTest, TimedExecute) {
     testing::internal::CaptureStdout();
     std::ofstream outLog("/dev/null");
     int serial = -1;
     initializeSerial(&serial, true);
 
-    const Timed_Command acceleration = {1900, 1900, 1100,
+    const Timed_Command command = {1900, 1900, 1100,
                                            1250, 1300, 1464, 1535,
                                            1536, std::chrono::milliseconds(2000)};
 
@@ -202,7 +202,7 @@ TEST(CommandInterpreterTest, BlindExecutePwm) {
                                                     std::cerr);
     interpreter->initializePins();
     auto startTime = std::chrono::system_clock::now();
-    interpreter->timed_execute(acceleration);
+    interpreter->timed_execute(command);
     auto endTime = std::chrono::system_clock::now();
     std::string output = testing::internal::GetCapturedStdout();
     auto pinStatus = interpreter->readPins();
