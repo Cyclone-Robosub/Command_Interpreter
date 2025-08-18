@@ -16,7 +16,7 @@ bool inline operator==(const pwm_array& lhs, const pwm_array& rhs) {
     return true;
 }
 
-struct Timed_Command {
+struct Timed_Interpreter_Command {
     pwm_array thruster_pwms; // PWM values for each thruster
     std::chrono::milliseconds duration; // Duration of the command in milliseconds
 };

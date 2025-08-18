@@ -184,7 +184,7 @@ TEST(CommandInterpreterTest, TimedExecute) {
     int serial = -1;
     initializeSerial(&serial, true);
 
-    const Timed_Command command = {1900, 1900, 1100,
+    const Timed_Interpreter_Command command = {1900, 1900, 1100,
                                            1250, 1300, 1464, 1535,
                                            1536, std::chrono::milliseconds(2000)};
 

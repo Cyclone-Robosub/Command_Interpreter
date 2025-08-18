@@ -167,7 +167,7 @@ Command_Interpreter_RPi5::~Command_Interpreter_RPi5() {
     }
 }
 
-void Command_Interpreter_RPi5::timed_execute(const Timed_Command &commandComponent) {
+void Command_Interpreter_RPi5::timed_execute(const Timed_Interpreter_Command &commandComponent) {
     isInterruptTimed_Execute = false;
     auto endTime = std::chrono::system_clock::now() + commandComponent.duration;
     auto currentTime = std::chrono::system_clock::now();
