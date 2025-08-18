@@ -156,6 +156,11 @@ public:
     /// @brief Set an interrupt for the blind_execute function while running. Calling this function sets the interrupt to occur.
     void  interruptTimed_Execute() {isInterruptTimed_Execute = true;}
 
+    /// @brief Sets the minimum and maximum allowed PWM values for all PWM pins
+    /// @param min the minimum PWM value allowed. Must be at least 1100 and at most 1900.
+    /// @param max the maximum PWM value allowed. Must be at least 1100 and at most 1900.
+    void setAllPwmLimits(int min, int max);
+
     ~Command_Interpreter_RPi5(); //TODO this also deletes all its pins. Not sure if this is desirable or not?
 };
 

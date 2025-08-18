@@ -147,6 +147,12 @@ void Command_Interpreter_RPi5::initializePins() {
     }
 }
 
+void Command_Interpreter_RPi5::setAllPwmLimits(int min, int max) {
+    for (auto pin : thrusterPins) {
+        pin->setPwmLimits(min, max);
+    }
+}
+
 std::vector<int> Command_Interpreter_RPi5::readPins() {
     std::vector<int> pinValues;
     for (auto pin: allPins()) {
