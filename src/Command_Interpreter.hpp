@@ -72,9 +72,6 @@ public:
 /// @brief a pwm-capable Raspberry Pi Pico GPIO pin (supports analogue output)
 class PwmPin : public Pin {
 protected:
-    /// @brief Sets pin to the specified pwm value and direction
-    /// @param pwmValue a pwm value dictating the power and direction for the thruster
-    void setPWM(int pwmValue, WiringControl &wiringControl);
     int minPwmValue;
     int maxPwmValue;
 
