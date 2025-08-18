@@ -23,7 +23,7 @@ void WiringControl::printToSerial(const std::string& message) {
 #include "Serial.hpp"
 
 bool WiringControl::initializeSerial() {
-    if ((serial = serialOpen("/dev/serial/by-id/usb-MicroPython_Board_in_FS_mode_e6614864d3798738-if00", 115200)) < 0) {
+    if ((serial = serialOpen("/dev/serial/by-id/usb-MicroPython_Board_in_FS_mode_e663682593227739-if00", 115200)) < 0) {
         return false;
     }
     return true;
@@ -39,10 +39,8 @@ void WiringControl::printToSerial(const std::string &message) {
 
 #endif
 
-WiringControl::WiringControl(std::ostream &output, std::ostream &outLog, std::ostream &errorLog) : output(output),
-                                                                                                      outLog(outLog),
-                                                                                                      errorLog(
-                                                                                                              errorLog) {};
+WiringControl::WiringControl(std::ostream &output, std::ostream &outLog, std::ostream &errorLog) : 
+                            output(output), outLog(outLog), errorLog(errorLog) {};
 
 void WiringControl::setPinType(int pinNumber, PinType pinType) {
     std::string message = "Configure ";
@@ -62,17 +60,10 @@ void WiringControl::setPinType(int pinNumber, PinType pinType) {
             digitalWrite(pinNumber, High);
             digitalPinStatuses[pinNumber] = High;
             break;
-        case HardwarePWM:
-            message.append(" HardPwm\n");
+        case PWM:
+            message.append(" PWM\n");
             printToSerial(message);
-            pinTypes[pinNumber] = HardwarePWM;
-            pwmWrite(pinNumber, 1500);
-            pwmPinStatuses[pinNumber] = PwmPinStatus{1500, 0};
-            break;
-        case SoftwarePWM:
-            message.append(" SoftPwm\n");
-            printToSerial(message);
-            pinTypes[pinNumber] = SoftwarePWM;
+            pinTypes[pinNumber] = PWM;
             pwmWrite(pinNumber, 1500);
             pwmPinStatuses[pinNumber] = PwmPinStatus{1500, 0};
             break;
@@ -112,8 +103,7 @@ void WiringControl::pwmWrite(int pinNumber, int pulseWidth) {
     std::string message = "Set ";
     message.append(std::to_string(pinNumber));
     switch (pinTypes[pinNumber]) {
-        case HardwarePWM:
-        case SoftwarePWM:
+        case PWM:
             message.append(" PWM ");
             message.append(std::to_string(pulseWidth));
             message.append("\n");

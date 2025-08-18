@@ -21,7 +21,7 @@ void DigitalPin::initialize(WiringControl &wiringControl) {
     }
 }
 
-void DigitalPin::enable(WiringControl &wiringControl) {
+void DigitalPin::activate(WiringControl &wiringControl) {
     switch (enableType) {
         case ActiveHigh:
             wiringControl.digitalWrite(gpioNumber, High);
@@ -35,7 +35,7 @@ void DigitalPin::enable(WiringControl &wiringControl) {
     }
 }
 
-void DigitalPin::disable(WiringControl &wiringControl) {
+void DigitalPin::deactivate(WiringControl &wiringControl) {
     switch (enableType) {
         case ActiveHigh:
             wiringControl.digitalWrite(gpioNumber, Low);
@@ -65,13 +65,15 @@ int DigitalPin::read(WiringControl &wiringControl) {
     return wiringControl.digitalRead(gpioNumber);
 }
 
+
+
 void PwmPin::setPwm(int pulseWidth, WiringControl &wiringControl) {
     if (pulseWidth > maxPwmValue || pulseWidth < minPwmValue) {
         errorLog << "PWM out of bounds! Value " << pulseWidth << " is out of bounds for range [" <<
             minPwmValue << "," << maxPwmValue << "]. Setting to closest valid value." << std::endl;
         pulseWidth = (pulseWidth > maxPwmValue) ? maxPwmValue : minPwmValue;
     }
-    setPowerAndDirection(pulseWidth, wiringControl);
+    wiringControl.pwmWrite(gpioNumber, pulseWidth);
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     outLog << "Current time: " << std::ctime(&currentTime) << std::endl;
     outLog << "Thruster at pin " << gpioNumber << ": " << pulseWidth << std::endl;
@@ -105,55 +107,14 @@ void PwmPin::setPwmLimits(int min, int max) {
     }
 }
 
-
-void HardwarePwmPin::initialize(WiringControl &wiringControl) {
-    wiringControl.setPinType(gpioNumber, HardwarePWM);
+void PwmPin::initialize(WiringControl &wiringControl) {
+    wiringControl.setPinType(gpioNumber, PWM);
 }
 
-void HardwarePwmPin::enable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteMaximum(gpioNumber);
-}
-
-void HardwarePwmPin::disable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteOff(gpioNumber);
-}
-
-bool HardwarePwmPin::enabled(WiringControl &wiringControl) {
-    return wiringControl.pwmRead(gpioNumber).pulseWidth != 1500;
-}
-
-void HardwarePwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
-    wiringControl.pwmWrite(gpioNumber, pwmValue);
-}
-
-int HardwarePwmPin::read(WiringControl &wiringControl) {
+int PwmPin::read(WiringControl &wiringControl) {
     return wiringControl.pwmRead(gpioNumber).pulseWidth;
 }
 
-
-void SoftwarePwmPin::initialize(WiringControl &wiringControl) {
-    wiringControl.setPinType(gpioNumber, SoftwarePWM);
-}
-
-void SoftwarePwmPin::enable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteMaximum(gpioNumber);
-}
-
-void SoftwarePwmPin::disable(WiringControl &wiringControl) {
-    wiringControl.pwmWriteOff(gpioNumber);
-}
-
-bool SoftwarePwmPin::enabled(WiringControl &wiringControl) {
-    return wiringControl.pwmRead(gpioNumber).pulseWidth != 1500;
-}
-
-void SoftwarePwmPin::setPowerAndDirection(int pwmValue, WiringControl &wiringControl) {
-    wiringControl.pwmWrite(gpioNumber, pwmValue);
-}
-
-int SoftwarePwmPin::read(WiringControl &wiringControl) {
-    return wiringControl.pwmRead(gpioNumber).pulseWidth;
-}
 
 
 Command_Interpreter_RPi5::Command_Interpreter_RPi5(std::vector<PwmPin *> thrusterPins,
@@ -186,6 +147,12 @@ void Command_Interpreter_RPi5::initializePins() {
     }
 }
 
+void Command_Interpreter_RPi5::setAllPwmLimits(int min, int max) {
+    for (auto pin : thrusterPins) {
+        pin->setPwmLimits(min, max);
+    }
+}
+
 std::vector<int> Command_Interpreter_RPi5::readPins() {
     std::vector<int> pinValues;
     for (auto pin: allPins()) {
@@ -200,7 +167,7 @@ Command_Interpreter_RPi5::~Command_Interpreter_RPi5() {
     }
 }
 
-void Command_Interpreter_RPi5::timed_execute(const CommandComponent &commandComponent) {
+void Command_Interpreter_RPi5::timed_execute(const Timed_Command &commandComponent) {
     isInterruptTimed_Execute = false;
     auto endTime = std::chrono::system_clock::now() + commandComponent.duration;
     auto currentTime = std::chrono::system_clock::now();

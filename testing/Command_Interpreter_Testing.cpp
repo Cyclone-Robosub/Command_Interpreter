@@ -28,7 +28,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreter) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr));
+        pins.push_back(new PwmPin(pinNumber, std::cout, outLog, std::cerr));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -45,7 +45,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreter) {
     for (int pinNumber: pinNumbers) {
         expectedOutput.append("Configure ");
         expectedOutput.append(std::to_string(pinNumber));
-        expectedOutput.append(" HardPwm\nSet ");
+        expectedOutput.append(" PWM\nSet ");
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
@@ -77,7 +77,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreterWithDigitalPins) {
     auto pwmPins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pwmPins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
+        pwmPins.push_back(new PwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -98,7 +98,7 @@ TEST(CommandInterpreterTest, CreateCommandInterpreterWithDigitalPins) {
     for (int pinNumber: pinNumbers) {
         expectedOutput.append("Configure ");
         expectedOutput.append(std::to_string(pinNumber));
-        expectedOutput.append(" HardPwm\nSet ");
+        expectedOutput.append(" PWM\nSet ");
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
@@ -133,7 +133,7 @@ TEST(CommandInterpreterTest, UntimedExecute) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
+        pins.push_back(new PwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -151,7 +151,7 @@ TEST(CommandInterpreterTest, UntimedExecute) {
     for (int pinNumber: pinNumbers) {
         expectedOutput.append("Configure ");
         expectedOutput.append(std::to_string(pinNumber));
-        expectedOutput.append(" HardPwm\nSet ");
+        expectedOutput.append(" PWM\nSet ");
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
@@ -178,13 +178,13 @@ TEST(CommandInterpreterTest, UntimedExecute) {
     }
 }
 
-TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
+TEST(CommandInterpreterTest, TimedExecute) {
     testing::internal::CaptureStdout();
     std::ofstream outLog("/dev/null");
     int serial = -1;
     initializeSerial(&serial, true);
 
-    const CommandComponent acceleration = {1900, 1900, 1100,
+    const Timed_Command command = {1900, 1900, 1100,
                                            1250, 1300, 1464, 1535,
                                            1536, std::chrono::milliseconds(2000)};
 
@@ -193,7 +193,7 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        pins.push_back(new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
+        pins.push_back(new PwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -202,7 +202,7 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
                                                     std::cerr);
     interpreter->initializePins();
     auto startTime = std::chrono::system_clock::now();
-    interpreter->timed_execute(acceleration);
+    interpreter->timed_execute(command);
     auto endTime = std::chrono::system_clock::now();
     std::string output = testing::internal::GetCapturedStdout();
     auto pinStatus = interpreter->readPins();
@@ -213,7 +213,7 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
     for (int pinNumber: pinNumbers) {
         expectedOutput.append("Configure ");
         expectedOutput.append(std::to_string(pinNumber));
-        expectedOutput.append(" HardPwm\nSet ");
+        expectedOutput.append(" PWM\nSet ");
         expectedOutput.append(std::to_string(pinNumber));
         expectedOutput.append(" PWM 1500\n");
     }
@@ -235,72 +235,6 @@ TEST(CommandInterpreterTest, BlindExecuteHardwarePwm) {
                                                                       std::chrono::milliseconds(1),
                 std::chrono::milliseconds(10) / std::chrono::milliseconds(1));
     ASSERT_EQ(pinStatus, (std::vector<int>{1900, 1900, 1100, 1250, 1300, 1464, 1535, 1536}));
-    if (serialOutput.empty()) {
-        ASSERT_EQ(output, expectedOutput);
-    } else {
-        expectedOutput.insert(0, "echo on\n");
-        ASSERT_EQ(serialOutput, expectedOutput);
-    }
-}
-
-TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
-    testing::internal::CaptureStdout();
-    std::ofstream outLog("/dev/null");
-    int serial = -1;
-    initializeSerial(&serial, true);
-
-    const CommandComponent acceleration = {1100, 1900, 1100,
-                                           1250, 1300, 1464, 1535,
-                                           1536, std::chrono::milliseconds(2000)};
-
-    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
-
-    auto pins = std::vector<PwmPin *>{};
-
-    for (int pinNumber: pinNumbers) {
-        pins.push_back(new SoftwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1100, 1900));
-    }
-
-    WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
-
-    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{}, wiringControl, std::cout, outLog,
-                                                    std::cerr);
-    interpreter->initializePins();
-    auto startTime = std::chrono::system_clock::now();
-    interpreter->timed_execute(acceleration);
-    auto endTime = std::chrono::system_clock::now();
-    std::string output = testing::internal::GetCapturedStdout();
-    auto pinStatus = interpreter->readPins();
-
-    delete interpreter;
-
-    std::string expectedOutput;
-    for (int pinNumber: pinNumbers) {
-        expectedOutput.append("Configure ");
-        expectedOutput.append(std::to_string(pinNumber));
-        expectedOutput.append(" SoftPwm\nSet ");
-        expectedOutput.append(std::to_string(pinNumber));
-        expectedOutput.append(" PWM 1500\n");
-    }
-    expectedOutput.append("Set 8 PWM 1100\n");
-    expectedOutput.append("Set 9 PWM 1900\n");
-    expectedOutput.append("Set 6 PWM 1100\n");
-    expectedOutput.append("Set 7 PWM 1250\n");
-    expectedOutput.append("Set 13 PWM 1300\n");
-    expectedOutput.append("Set 11 PWM 1464\n");
-    expectedOutput.append("Set 12 PWM 1535\n");
-    expectedOutput.append("Set 10 PWM 1536\n");
-
-    int charRead = EOF;
-    std::string serialOutput;
-    while ((charRead = getSerialChar(&serial, true)) != EOF) {
-        serialOutput.push_back((char) charRead);
-    }
-    ASSERT_NEAR((endTime - startTime) / std::chrono::milliseconds(1), std::chrono::milliseconds(2000) /
-                                                                      std::chrono::milliseconds(1),
-                std::chrono::milliseconds(10) / std::chrono::milliseconds(1));
-
-    ASSERT_EQ(pinStatus, (std::vector<int>{1100, 1900, 1100, 1250, 1300, 1464, 1535, 1536}));
     if (serialOutput.empty()) {
         ASSERT_EQ(output, expectedOutput);
     } else {
@@ -312,7 +246,7 @@ TEST(CommandInterpreterTest, BlindExecuteSoftwarePwm) {
 TEST(CommandInterpreterTest, LimitTooLow) {
     std::ofstream outLog("/dev/null");
 
-    auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
+    auto newPin = new PwmPin(0, std::cout, outLog, std::cerr);
     ASSERT_EXIT(newPin->setPwmLimits(1099,1800), testing::ExitedWithCode(42), 
         "Invalid min pwm value! Attempted to set to 1099 which is out of range \\[1100,1900\\]. Exiting.");
 }
@@ -320,7 +254,7 @@ TEST(CommandInterpreterTest, LimitTooLow) {
 TEST(CommandInterpreterTest, LimitTooHigh) {
     std::ofstream outLog("/dev/null");
 
-    auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
+    auto newPin = new PwmPin(0, std::cout, outLog, std::cerr);
     ASSERT_EXIT(newPin->setPwmLimits(1100,1901), testing::ExitedWithCode(42), 
         "Invalid max pwm value! Attempted to set to 1901 which is out of range \\[1100,1900\\]. Exiting.");
 }
@@ -328,12 +262,12 @@ TEST(CommandInterpreterTest, LimitTooHigh) {
 TEST(CommandInterpreterTest, BadLimitsMaxLessThanMin) {
     std::ofstream outLog("/dev/null");
 
-    auto newPin = new HardwarePwmPin(0, std::cout, outLog, std::cerr);
+    auto newPin = new PwmPin(0, std::cout, outLog, std::cerr);
     ASSERT_EXIT(newPin->setPwmLimits(1900,1100), testing::ExitedWithCode(42), 
         "Invalid limits! max \\(value 1100\\) is smaller than min \\(value 1900\\). Exiting.");
 }
 
-TEST(CommandInterpreterTest, HardwarePWMTooLarge) {
+TEST(CommandInterpreterTest, PWMTooLarge) {
     testing::internal::CaptureStdout();
     testing::internal::CaptureStderr();
     std::ofstream outLog("/dev/null");
@@ -347,9 +281,87 @@ TEST(CommandInterpreterTest, HardwarePWMTooLarge) {
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        auto newPin = new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr);
-        newPin->setPwmLimits(1200,1800);
+        auto newPin = new PwmPin(pinNumber, std::cout, outLog, std::cerr);
+        newPin->setPwmLimits(1250,1750);
         pins.push_back(newPin);
+    }
+
+    WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
+
+    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{}, wiringControl, std::cout, outLog,
+                                                    std::cerr);
+    interpreter->initializePins();
+    interpreter->untimed_execute(pwms);
+    std::string error = testing::internal::GetCapturedStderr();
+    testing::internal::GetCapturedStdout();
+    auto pinStatus = interpreter->readPins();
+
+    delete interpreter;
+
+    std::string expectedError;
+    for (int pinNumber : pinNumbers){
+        expectedError.append("PWM out of bounds! Value 1900 is out of bounds for range [1250,1750]. Setting to closest valid value.\n");
+    } 
+
+    ASSERT_EQ(pinStatus, (std::vector<int>{1750, 1750, 1750, 1750, 1750, 1750, 1750, 1750}));
+    ASSERT_EQ(error, expectedError);
+}
+
+TEST(CommandInterpreterTest, PWMTooSmall) {
+    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
+    std::ofstream outLog("/dev/null");
+    int serial = -1;
+    initializeSerial(&serial, true);
+
+    const pwm_array pwms = {1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100};
+
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
+
+    auto pins = std::vector<PwmPin *>{};
+
+    for (int pinNumber: pinNumbers) {
+        auto newPin = new PwmPin(pinNumber, std::cout, outLog, std::cerr, 1000, 1900);
+        newPin->setPwmLimits(1250,1750);
+        pins.push_back(newPin);
+    }
+
+    WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
+
+    auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{}, wiringControl, std::cout, outLog,
+                                                    std::cerr);
+    interpreter->initializePins();
+    interpreter->untimed_execute(pwms);
+    std::string error = testing::internal::GetCapturedStderr();
+    testing::internal::GetCapturedStdout();
+    auto pinStatus = interpreter->readPins();
+
+    delete interpreter;
+
+    std::string expectedError;
+    for (int pinNumber : pinNumbers){
+        expectedError.append("PWM out of bounds! Value 1100 is out of bounds for range [1250,1750]. Setting to closest valid value.\n");
+    } 
+
+    ASSERT_EQ(pinStatus, (std::vector<int>{1250, 1250, 1250, 1250, 1250, 1250, 1250, 1250}));
+    ASSERT_EQ(error, expectedError);
+}
+
+TEST(CommandInterpreterTest, DefaultPWMLimits) {
+    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
+    std::ofstream outLog("/dev/null");
+    int serial = -1;
+    initializeSerial(&serial, true);
+
+    const pwm_array pwms = {1900, 1900, 1900, 1900, 1900, 1900, 1900, 1900};
+
+    auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
+
+    auto pins = std::vector<PwmPin *>{};
+
+    for (int pinNumber: pinNumbers) {
+        auto newPin = new PwmPin(pinNumber, std::cout, outLog, std::cerr);
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -373,23 +385,21 @@ TEST(CommandInterpreterTest, HardwarePWMTooLarge) {
     ASSERT_EQ(error, expectedError);
 }
 
-TEST(CommandInterpreterTest, HardwarePWMTooSmall) {
+TEST(CommandInterpreterTest, SetPWMLimitAllPins) {
     testing::internal::CaptureStdout();
     testing::internal::CaptureStderr();
     std::ofstream outLog("/dev/null");
     int serial = -1;
     initializeSerial(&serial, true);
 
-    const pwm_array pwms = {1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100};
+    const pwm_array pwms = {1900, 1900, 1900, 1900, 1900, 1900, 1900, 1900};
 
     auto pinNumbers = std::vector<int>{8, 9, 6, 7, 13, 11, 12, 10};
 
     auto pins = std::vector<PwmPin *>{};
 
     for (int pinNumber: pinNumbers) {
-        auto newPin = new HardwarePwmPin(pinNumber, std::cout, outLog, std::cerr, 1000, 1900);
-        newPin->setPwmLimits(1200,1800);
-        pins.push_back(newPin);
+        auto newPin = new PwmPin(pinNumber, std::cout, outLog, std::cerr);
     }
 
     WiringControl wiringControl = WiringControl(std::cout, outLog, std::cerr);
@@ -397,6 +407,7 @@ TEST(CommandInterpreterTest, HardwarePWMTooSmall) {
     auto interpreter = new Command_Interpreter_RPi5(pins, std::vector<DigitalPin *>{}, wiringControl, std::cout, outLog,
                                                     std::cerr);
     interpreter->initializePins();
+    interpreter->setAllPwmLimits(1250,1750);
     interpreter->untimed_execute(pwms);
     std::string error = testing::internal::GetCapturedStderr();
     testing::internal::GetCapturedStdout();
@@ -406,9 +417,9 @@ TEST(CommandInterpreterTest, HardwarePWMTooSmall) {
 
     std::string expectedError;
     for (int pinNumber : pinNumbers){
-        expectedError.append("PWM out of bounds! Value 1100 is out of bounds for range [1200,1800]. Setting to closest valid value.\n");
+        expectedError.append("PWM out of bounds! Value 1900 is out of bounds for range [1250,1750]. Setting to closest valid value.\n");
     } 
 
-    ASSERT_EQ(pinStatus, (std::vector<int>{1200, 1200, 1200, 1200, 1200, 1200, 1200, 1200}));
+    ASSERT_EQ(pinStatus, (std::vector<int>{1750, 1750, 1750, 1750, 1750, 1750, 1750, 1750}));
     ASSERT_EQ(error, expectedError);
 }

@@ -1,13 +1,13 @@
 // William Barber
-
-#pragma once
+#ifndef WIRING_HPP 
+#define WIRING_HPP
 
 #include <unordered_map>
 #include <fstream>
 
 /// @brief What purpose the given pin is configured for
 enum PinType {
-    DigitalActiveLow, DigitalActiveHigh, HardwarePWM, SoftwarePWM
+    DigitalActiveLow, DigitalActiveHigh, PWM
 };
 
 /// @brief Whether a digital pin is currently low or high
@@ -81,3 +81,5 @@ public:
 
     ~WiringControl();
 };
+
+#endif
